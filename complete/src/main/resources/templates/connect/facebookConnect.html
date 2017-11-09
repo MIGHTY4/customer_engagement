@@ -1,0 +1,24 @@
+<html>
+<head>
+<link th:href="@{/css/styles.css}" href="../static/css/styles.css"
+	rel="stylesheet" type="text/css" />
+<title>Login to Facebook</title>
+</head>
+
+<body class="facebookBgLite">
+
+	<form action="/connect/facebook" method="POST">
+		<input type="hidden" name="scope"
+			value="user_posts, user_likes, email" />
+		<div class="formInfo">
+			<h3 class="facebookText">You aren't connected to Facebook yet.
+				Click the button to connect this application with your Facebook
+				account.</h3>
+		</div>
+		<p>
+			<button type="submit" class="loginBtn loginBtn--facebook">
+				Login with Facebook</button>
+		</p>
+	</form>
+</body>
+</html>
