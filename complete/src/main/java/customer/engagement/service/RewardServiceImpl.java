@@ -1,17 +1,11 @@
-package customer.engagement;
+package customer.engagement.service;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.stereotype.Service;
 
-@Controller
-@RequestMapping("/rewards")
-public class RewardController {
+@Service
+public class RewardServiceImpl implements RewardService {
 
-	@RequestMapping("/{id}")
-	@ResponseBody
-	public String getRewardsPoint(@PathVariable("id") String id) {
+	public String getRewardPoint(String id) {
 		String response = "{\r\n" + "                \"responseCode\": \"SUCCESS\",\r\n"
 				+ "                \"errors\": [],\r\n" + "                \"reward_points_status\": [\r\n"
 				+ "                                                                                                                                {\r\n"

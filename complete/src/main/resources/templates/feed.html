@@ -1,11 +1,20 @@
 <html>
-	<head>
-		<title>Hello Facebook</title>
-	</head>
-	<body bgcolor="#4267b2">
-		<h3 align="right"><font color="#ffffff">Welcome, <span th:text="${username}"></span></font></h3>
-		<h4 align="left"><font color="#ffffff">Your registered email Id is: <span th:text="${user.email}"></span></font></h4>
-		<h3 align="left"><font color="#ffffff">Cover photo from faecbook</font></h3>
-		<img th:if="${user.cover.source}" th:src="${user.cover.source}" style="border:3px solid white" title="Facebook Cover pics"/>
-	</body>
+<head>
+<title>Hello Facebook</title>
+</head>
+<body bgcolor="#4267b2">
+	<h3 align="right">
+		<font color="#ffffff">Welcome, <span th:text="${login.name}"></span></font>
+	</h3>
+
+	<!--<h3 align="left"><font color="#ffffff">Cover photo from faecbook</font></h3>
+	 	<img th:if="${login.coverPicsURL}" th:src="${login.coverPicsURL}" style="border:3px solid white" title="Facebook Cover pics"/> -->
+
+	<img th:if="${login.profilePics}" th:src="${login.profilePics}"
+		style="border: 3px solid white" title="Facebook Profile pics" />
+	<h4 align="left">
+		<font color="#ffffff">Your registered email Id is: <span
+			th:text="${login.email}"></span></font>
+	</h4>
+</body>
 </html>
