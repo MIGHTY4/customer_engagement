@@ -7,13 +7,13 @@ package customer.engagement.domain;
  *
  */
 public class UserGroup {
-	private long id;
+	private String id;
 	private String name;
 
 	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -21,7 +21,7 @@ public class UserGroup {
 	 * @param id
 	 *            the id to set
 	 */
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

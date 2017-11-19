@@ -84,3 +84,12 @@ body {
 .facebookText {
 	color: #ffffff;
 }
+
+header, footer {
+    padding: 1em;
+    color: #ffffff;
+    background-color: #8b9dc3;
+    clear: left;
+    text-align: center;
+    bottom: 0;
+}

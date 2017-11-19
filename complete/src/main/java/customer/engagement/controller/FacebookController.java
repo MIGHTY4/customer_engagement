@@ -45,9 +45,7 @@ public class FacebookController {
 		}
 
 		LoginDTO loginDTO = facebookService.login(facebook);
-		
 		model.addAttribute("login", loginDTO);
-
 		return "feed";
 	}
 

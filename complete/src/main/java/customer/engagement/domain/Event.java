@@ -8,7 +8,7 @@ package customer.engagement.domain;
  */
 public class Event {
 
-	private long id;
+	private String id;
 	private String description;
 	private String eventName;
 	private String organizerName;
@@ -17,7 +17,7 @@ public class Event {
 	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -25,7 +25,7 @@ public class Event {
 	 * @param id
 	 *            the id to set
 	 */
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

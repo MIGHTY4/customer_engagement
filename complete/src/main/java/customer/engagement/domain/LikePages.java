@@ -8,7 +8,7 @@ package customer.engagement.domain;
  */
 public class LikePages {
 
-	private long id;
+	private String id;
 	private String description;
 	private String category;
 	private String name;
@@ -18,7 +18,7 @@ public class LikePages {
 	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -26,7 +26,7 @@ public class LikePages {
 	 * @param id
 	 *            the id to set
 	 */
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
