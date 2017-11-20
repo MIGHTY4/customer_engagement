@@ -23,11 +23,14 @@ import org.springframework.social.facebook.api.Location;
 import org.springframework.social.facebook.api.Page;
 import org.springframework.social.facebook.api.PagedList;
 import org.springframework.social.facebook.api.PlaceTag;
+import org.springframework.social.facebook.api.Post;
 import org.springframework.social.facebook.api.User;
 import org.springframework.social.facebook.api.WorkEntry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import customer.engagement.dao.CorporationRepository;
+import customer.engagement.dao.CustomerRepository;
 import customer.engagement.dao.UserRepository;
 import customer.engagement.domain.EducationDetails;
 import customer.engagement.domain.Event;
@@ -37,6 +40,8 @@ import customer.engagement.domain.UserGroup;
 import customer.engagement.domain.UserPage;
 import customer.engagement.domain.WorkDetail;
 import customer.engagement.dto.LoginDTO;
+import customer.engagement.dto.Customer;
+import customer.engagement.dto.Corporation;
 
 @Service
 @Transactional
@@ -45,13 +50,21 @@ public class FacebookServiceImpl implements FacebookService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FacebookServiceImpl.class);
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
+
+	@Autowired
+	private CustomerRepository customerRepositroy;
+
+	@Autowired
+	private CorporationRepository corporationRepository;
 
 	@Autowired
 	private JavaMailSender sender;
 
 	@Override
 	public LoginDTO login(Facebook facebook) {
+
+		boolean isCustomer = true;
 
 		if (facebook == null) {
 			// TODO
@@ -62,11 +75,17 @@ public class FacebookServiceImpl implements FacebookService {
 		User userProfile = facebook.userOperations().getUserProfile();
 		loginDTO.setName(userProfile.getName());
 		loginDTO.setEmail(userProfile.getEmail());
-		loginDTO.setCoverPicsURL(userProfile.getCover().getSource());
+		if (userProfile.getCover() != null) {
+			loginDTO.setCoverPicsURL(userProfile.getCover().getSource());
+		}
+
 		customer.engagement.domain.User user = new customer.engagement.domain.User();
 		displayUserProfile(userProfile, user);
 
 		PagedList<Account> accounts = facebook.pageOperations().getAccounts();
+		if (accounts.size() == 1) {
+			isCustomer = false;
+		}
 		getAllPages(accounts, user);
 
 		// List of all groups created by users..
@@ -96,18 +115,46 @@ public class FacebookServiceImpl implements FacebookService {
 		getAllLikes(likes, user);
 
 		// TODO can be used to find all tagged places,status
-		// PagedList<Post> tagged = facebook.feedOperations().getTagged();
+		PagedList<Post> tagged = facebook.feedOperations().getTagged();
 
 		customer.engagement.domain.User dbUser = userRepository.findByFacebookId(user.getFacebookId());
 		if (dbUser == null) {
 			userRepository.save(user);
-			try {
-				sendEmail(user);
-			} catch (Exception e) {
-				LOGGER.error("Something went wrong while sending email for user: {}", user.getName(), e.getMessage());
+			if (isCustomer) {
+				Customer customer = getCustomer(user);
+				customerRepositroy.save(customer);
+				try {
+					sendEmail(user);
+				} catch (Exception e) {
+					LOGGER.error("Something went wrong while sending email for user: {}", user.getName(),
+							e.getMessage());
+				}
+			} else {
+				corporationRepository.save(getCorporation(user));
 			}
+
 		}
 		return loginDTO;
+	}
+
+	private Customer getCustomer(customer.engagement.domain.User user) {
+		Customer customer = new Customer();
+		customer.setId(user.getFacebookId());
+		customer.setCity(user.getCurrentLocation());
+		customer.setGender(user.getGender());
+		customer.setName(user.getName());
+		customer.setReligion(user.getReligion());
+		return customer;
+	}
+
+	private Corporation getCorporation(customer.engagement.domain.User user) {
+		Corporation corporation = new Corporation();
+		corporation.setCorporationId(user.getFacebookId());
+		corporation.setCorporationName(user.getUserPage().get(0).getName());
+		corporation.setURL(user.getWebsite());
+		corporation.setAddress(user.getCurrentLocation());
+		corporation.setFunctionalDomain(user.getUserPage().get(0).getCategory());
+		return corporation;
 	}
 
 	/**
@@ -116,6 +163,7 @@ public class FacebookServiceImpl implements FacebookService {
 	 * @param user
 	 * @throws Exception
 	 */
+
 	private void sendEmail(customer.engagement.domain.User user) throws Exception {
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
@@ -217,26 +265,40 @@ public class FacebookServiceImpl implements FacebookService {
 		user.setGender(userProfile.getGender());
 
 		user.setBirthday(userProfile.getBirthday());
-		user.setHomeTownLocation(userProfile.getHometown().getName());
-		user.setCurrentLocation(userProfile.getLocation().getName());
-		user.setCoverPicsURL(userProfile.getCover().getSource());
+		if (userProfile.getHometown() != null) {
+			user.setHomeTownLocation(userProfile.getHometown().getName());
+		}
+
+		if (userProfile.getLocation() != null) {
+			user.setCurrentLocation(userProfile.getLocation().getName());
+		}
+
+		if (userProfile.getCover() != null) {
+			user.setCoverPicsURL(userProfile.getCover().getSource());
+		}
+
 		user.setWebsite(userProfile.getWebsite());
 
 		List<WorkDetail> workDetails = new ArrayList<>();
-		for (WorkEntry work : userProfile.getWork()) {
-			WorkDetail workDetail = new WorkDetail();
-			workDetail.setEmployerName(work.getEmployer().getName());
-			workDetails.add(workDetail);
+		if (userProfile.getWork() != null) {
+			for (WorkEntry work : userProfile.getWork()) {
+				WorkDetail workDetail = new WorkDetail();
+				workDetail.setEmployerName(work.getEmployer().getName());
+				workDetails.add(workDetail);
+			}
 		}
 		user.setWorkDetails(workDetails);
 
 		List<EducationDetails> educationDetails = new ArrayList<>();
-		for (EducationExperience exp : userProfile.getEducation()) {
-			EducationDetails details = new EducationDetails();
-			details.setInstituteName(exp.getSchool().getName());
-			details.setType(exp.getType());
-			educationDetails.add(details);
+		if (userProfile.getEducation() != null) {
+			for (EducationExperience exp : userProfile.getEducation()) {
+				EducationDetails details = new EducationDetails();
+				details.setInstituteName(exp.getSchool().getName());
+				details.setType(exp.getType());
+				educationDetails.add(details);
+			}
 		}
+		user.setEducationDetails(educationDetails);
 		LOGGER.debug("UserProfile : {}", user);
 
 	}
@@ -259,5 +321,4 @@ public class FacebookServiceImpl implements FacebookService {
 		LOGGER.debug("Get all pages: {}", pages);
 		user.setUserPage(pages);
 	}
-
 }

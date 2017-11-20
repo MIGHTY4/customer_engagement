@@ -31,6 +31,7 @@ public class User {
 	List<Event> event;
 	List<LikePages> likes;
 	List<TaggedPlaces> taggedPlaces;
+	List<EducationDetails> educationDetails;
 
 	/**
 	 * @return the id
@@ -317,19 +318,31 @@ public class User {
 		this.taggedPlaces = taggedPlaces;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
+	 * @return the educationDetails
+	 */
+	public List<EducationDetails> getEducationDetails() {
+		return educationDetails;
+	}
+
+	/**
+	 * @param educationDetails the educationDetails to set
+	 */
+	public void setEducationDetails(List<EducationDetails> educationDetails) {
+		this.educationDetails = educationDetails;
+	}
+
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "User [Id=" + id + ", facebookId=" + facebookId + ", name=" + name + ", email=" + email + ", gender="
+		return "User [id=" + id + ", facebookId=" + facebookId + ", name=" + name + ", email=" + email + ", gender="
 				+ gender + ", birthday=" + birthday + ", homeTownLocation=" + homeTownLocation + ", currentLocation="
 				+ currentLocation + ", coverPicsURL=" + coverPicsURL + ", profilePics=" + profilePics + ", website="
 				+ website + ", religion=" + religion + ", details=" + details + ", workDetails=" + workDetails
 				+ ", userGroup=" + userGroup + ", userPage=" + userPage + ", event=" + event + ", likes=" + likes
-				+ ", taggedPlaces=" + taggedPlaces + "]";
+				+ ", taggedPlaces=" + taggedPlaces + ", educationDetails=" + educationDetails + "]";
 	}
 
 }

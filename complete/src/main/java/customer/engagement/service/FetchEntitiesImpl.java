@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import customer.engagement.dao.UserRepository;
 import customer.engagement.domain.User;
-import customer.engagement.dto.UserDTO;
+import customer.engagement.dto.Customer;
 
 @Service
 @Transactional(readOnly = true)
@@ -19,33 +19,33 @@ public class FetchEntitiesImpl implements FetchEntities {
 	private UserRepository userRepository;
 
 	@Override
-	public UserDTO getUserDTO(String id) {
-		UserDTO userDTO = new UserDTO();
+	public Customer getUserDTO(String id) {
+		Customer userDTO = new Customer();
 		User user = userRepository.findOne(id);
 		userToUserDTOMapping(user, userDTO);
 		return userDTO;
 	}
 
 	@Override
-	public UserDTO getUserDTOByFacebookId(String id) {
-		UserDTO userDTO = new UserDTO();
+	public Customer getUserDTOByFacebookId(String id) {
+		Customer userDTO = new Customer();
 		User user = userRepository.findByFacebookId(id);
 		userToUserDTOMapping(user, userDTO);
 		return userDTO;
 	}
 
 	@Override
-	public UserDTO getUserDTOByEmail(String email) {
-		UserDTO userDTO = new UserDTO();
+	public Customer getUserDTOByEmail(String email) {
+		Customer userDTO = new Customer();
 		User user = userRepository.findByEmail(email);
 		userToUserDTOMapping(user, userDTO);
 		return userDTO;
 	}
 
 	@Override
-	public List<UserDTO> getAll() {
-		List<UserDTO> userDTOs = new ArrayList<>();
-		UserDTO userDTO = new UserDTO();
+	public List<Customer> getAll() {
+		List<Customer> userDTOs = new ArrayList<>();
+		Customer userDTO = new Customer();
 		List<User> users = userRepository.findAll();
 		for(User u: users) {
 			userToUserDTOMapping(u, userDTO);
@@ -54,7 +54,7 @@ public class FetchEntitiesImpl implements FetchEntities {
 		return userDTOs;
 	}
 
-	private void userToUserDTOMapping(customer.engagement.domain.User user, UserDTO userDTO) {
+	private void userToUserDTOMapping(customer.engagement.domain.User user, Customer userDTO) {
 
 	}
 
