@@ -3,9 +3,11 @@ package customer.engagement.dto;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "CUSTOMER")
 public class Customer {
-
+	
 	private enum FinancialCondition {
 		POOR, LOWER_MIDDLE_CLASS, UPPER_MIDDLE_CLASS, RICH
 	}

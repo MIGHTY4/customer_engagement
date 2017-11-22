@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import customer.engagement.dao.CorporationRepository;
 import customer.engagement.dao.CustomerRepository;
+import customer.engagement.dao.PageRepository;
 import customer.engagement.dao.UserRepository;
 import customer.engagement.domain.EducationDetails;
 import customer.engagement.domain.Event;
@@ -57,6 +58,9 @@ public class FacebookServiceImpl implements FacebookService {
 
 	@Autowired
 	private CorporationRepository corporationRepository;
+
+	@Autowired
+	private PageRepository pageRepository;
 
 	@Autowired
 	private JavaMailSender sender;
@@ -122,6 +126,41 @@ public class FacebookServiceImpl implements FacebookService {
 			userRepository.save(user);
 			if (isCustomer) {
 				Customer customer = getCustomer(user);
+				List<String> pageIds = new ArrayList<>();
+				for (Event e : user.getEvent()) {
+					if (pageRepository.findOne(e.getId()) == null) {
+						customer.engagement.dto.Page page = new customer.engagement.dto.Page();
+						page.setId(e.getId());
+						page.setName(e.getEventName());
+						page.setData(e.getDescription());
+						pageRepository.save(page);
+					}
+					pageIds.add(e.getId());
+				}
+				for (LikePages likePages : user.getLikes()) {
+					if (pageRepository.findOne(likePages.getId()) == null) {
+						customer.engagement.dto.Page page = new customer.engagement.dto.Page();
+						page.setId(likePages.getId());
+						page.setName(likePages.getName());
+						page.setCategory(likePages.getCategory());
+						page.setData(likePages.getDescription());
+						pageRepository.save(page);
+					}
+					pageIds.add(likePages.getId());
+				}
+
+				for (TaggedPlaces places : user.getTaggedPlaces()) {
+					if (pageRepository.findOne(places.getId()) == null) {
+						customer.engagement.dto.Page page = new customer.engagement.dto.Page();
+						page.setId(places.getId());
+						page.setName(places.getName());
+						page.setCategory(places.getCategory());
+						page.setData(places.getDescription());
+						pageRepository.save(page);
+					}
+					pageIds.add(places.getId());
+				}
+				customer.setPages(pageIds);
 				customerRepositroy.save(customer);
 				try {
 					sendEmail(user);
