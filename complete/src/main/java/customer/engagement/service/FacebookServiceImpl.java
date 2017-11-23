@@ -163,7 +163,8 @@ public class FacebookServiceImpl implements FacebookService {
 				customer.setPages(pageIds);
 				customerRepositroy.save(customer);
 				try {
-					sendEmail(user);
+					if(user.getEmail() != null && !user.getEmail().isEmpty())
+						sendEmail(user);
 				} catch (Exception e) {
 					LOGGER.error("Something went wrong while sending email for user: {}", user.getName(),
 							e.getMessage());
