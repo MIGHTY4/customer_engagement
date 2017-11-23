@@ -42,6 +42,7 @@ import customer.engagement.domain.UserPage;
 import customer.engagement.domain.WorkDetail;
 import customer.engagement.dto.LoginDTO;
 import customer.engagement.dto.Customer;
+import customer.engagement.dto.EmailDTO;
 import customer.engagement.dto.Corporation;
 
 @Service
@@ -63,7 +64,7 @@ public class FacebookServiceImpl implements FacebookService {
 	private PageRepository pageRepository;
 
 	@Autowired
-	private JavaMailSender sender;
+	private EmailService emailService;
 
 	@Override
 	public LoginDTO login(Facebook facebook) {
@@ -163,8 +164,15 @@ public class FacebookServiceImpl implements FacebookService {
 				customer.setPages(pageIds);
 				customerRepositroy.save(customer);
 				try {
-					if(user.getEmail() != null && !user.getEmail().isEmpty())
-						sendEmail(user);
+					if(user.getEmail() != null && !user.getEmail().isEmpty()) {
+						EmailDTO email = new EmailDTO();
+						email.setTo(user.getEmail());
+						email.setSubject("BARCLAY'S PRODUCTS & SERVICES");
+						email.setBody("BARCLAY'S PRODUCTS & SERVICES");
+						emailService.send(email);
+					}
+						
+						//sendEmail(user);
 				} catch (Exception e) {
 					LOGGER.error("Something went wrong while sending email for user: {}", user.getName(),
 							e.getMessage());
@@ -195,28 +203,6 @@ public class FacebookServiceImpl implements FacebookService {
 		corporation.setAddress(user.getCurrentLocation());
 		corporation.setFunctionalDomain(user.getUserPage().get(0).getCategory());
 		return corporation;
-	}
-
-	/**
-	 * Change email into HTML format
-	 * 
-	 * @param user
-	 * @throws Exception
-	 */
-
-	private void sendEmail(customer.engagement.domain.User user) throws Exception {
-		MimeMessagePreparator messagePreparator = mimeMessage -> {
-			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-			messageHelper.setTo(user.getEmail());
-			messageHelper.setSubject("Welcome to Travel card");
-			messageHelper.setText("Hi " + user.getName() + " , Thank you for signing...");
-		};
-		try {
-			sender.send(messagePreparator);
-		} catch (MailException e) {
-			LOGGER.error("Error while sending EMAIL: " + e.getMessage());
-			throw new Exception("Error while sending email for user: " + user.getName(), e);
-		}
 	}
 
 	private void getAllTaggedPlaces(List<PlaceTag> placeTags, customer.engagement.domain.User user) {
