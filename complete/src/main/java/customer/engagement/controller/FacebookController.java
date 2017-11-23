@@ -46,7 +46,7 @@ public class FacebookController {
 
 		LoginDTO loginDTO = facebookService.login(facebook);
 		model.addAttribute("login", loginDTO);
-		return "feed";
+		return "redirect:http://localhost:8001/single_page/";
 	}
 
 	
