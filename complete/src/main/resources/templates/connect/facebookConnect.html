@@ -5,7 +5,7 @@
 <title>Login to Facebook</title>
 </head>
 
-<body class="facebookBgLite">
+<body style="background-color: rgb(14, 180, 147);">
 
 	<form action="/connect/facebook" method="POST">
 		<input type="hidden" name="scope"
@@ -13,16 +13,14 @@
 				user_friends,user_about_me, user_status,user_religion_politics,manage_pages,
 				user_tagged_places,publish_actions,pages_show_list,pages_messaging_phone_number,public_profile,read_insights,business_management,read_audience_network_insights,  basic_info" />
 		<div class="formInfo">
-			<h3 class="facebookText">You aren't connected to Facebook yet.
-				Click the button to connect this application with your Facebook
-				account.</h3>
+			<h3 class="facebookTextCenter">Welcome to Barclays Travel</h3>
+			<!-- <h3 class="facebookText">Please login to access dashboard.</h3> -->
 		</div>
 		<p>
 			<button type="submit" class="loginBtn loginBtn--facebook">
 				Login with Facebook</button>
 		</p>
 	</form>
-	
-	<footer>Copyright &copy; Travel.com</footer>
 </body>
+<footer>Copyright &copy; Barclays Travel</footer>
 </html>

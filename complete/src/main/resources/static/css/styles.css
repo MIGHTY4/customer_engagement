@@ -2,6 +2,11 @@ body {
 	padding: 2em;
 }
 
+.background {
+	background-image: url("banner.jpg");
+	background-color: #cccccc;
+}
+
 /* Shared */
 .loginBtn {
 	box-sizing: border-box;
@@ -85,11 +90,18 @@ body {
 	color: #ffffff;
 }
 
+.facebookTextCenter {
+	color: #ffffff;
+	clear: left;
+	text-align: center;
+	padding: 1em;
+}
+
 header, footer {
-    padding: 1em;
-    color: #ffffff;
-    background-color: #8b9dc3;
-    clear: left;
-    text-align: center;
-    bottom: 0;
+	padding: 1em;
+	color: #ffffff;
+	/*  background-color: #8b9dc3;*/
+	clear: left;
+	text-align: center;
+	bottom: 0;
 }
